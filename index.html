@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aricks CoViD-19 Stats</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title">
+          COVID Stats
+        </h1>
+        <p class="subtitle">Updated at: <span id="updated"></span></p>
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Total cases</p>
+              <p class="title" id="total"></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Total deaths</p>
+              <p class="title" id="deaths"></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Cases today</p>
+              <p class="title" id="today"></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Deaths today</p>
+              <p class="title" id="todayDeaths"></p>
+            </div>
+          </div>
+        </nav>
+
+        <nav class="level">
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Active cases</p>
+              <p class="title" id="active"></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Critical cases</p>
+              <p class="title" id="critical"></p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+              <p class="heading">Tests issued</p>
+              <p class="title" id="tests"></p>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </section>
+
+    <script>
+      const total = document.querySelector("#total");
+      const updated = document.querySelector("#updated");
+      const today = document.querySelector("#today");
+      const tests = document.querySelector("#tests");
+      const deaths = document.querySelector("#deaths");
+      const active = document.querySelector("#active");
+      const critical = document.querySelector("#critical");
+      const todayDeaths = document.querySelector("#todayDeaths");
+      const socket = new WebSocket("ws://206.189.79.7:1880/covid");
+
+      socket.addEventListener("open", function (event) {
+        socket.send("Hello Server!");
+      });
+
+      socket.addEventListener("message", function (event) {
+        const data = JSON.parse(event.data);
+        updated.innerText = new Date(data.updated);
+        total.innerText = data.cases.toLocaleString();
+        deaths.innerText = data.deaths.toLocaleString();
+        active.innerText = data.active.toLocaleString();
+        critical.innerText = data.critical.toLocaleString();
+        tests.innerText = data.tests.toLocaleString();
+        today.innerText = data.todayCases.toLocaleString();
+        todayDeaths.innerText = data.todayDeaths.toLocaleString();
+
+        console.log(data);
+      });
+
+      function timeDifference(timestamp) {
+        const now = Date.now();
+      }
+    </script>
+  </body>
+</html>
